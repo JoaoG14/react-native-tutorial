@@ -12,6 +12,7 @@ const CartScreen = () => {
       <FlatList
         data={items}
         renderItem={({ item }) => <CartListItem cartItem={item} />}
+        contentContainerStyle={{ padding: 10, gap: 10 }}
       />
     </View>
   );
