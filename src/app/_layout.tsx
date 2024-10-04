@@ -5,11 +5,12 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
+import { Redirect, Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
 import CartProvider from "../providers/CartProvider";
+import AuthProvider, { useAuth } from "../providers/AuthProvider";
 
 import { useColorScheme } from "@/src/components/useColorScheme";
 
@@ -52,17 +53,24 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
+  const { session } = useAuth();
+
+  if (!session) {
+    return <Redirect href={"/"} />;
+  }
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <CartProvider>
-        <Stack>
-          <Stack.Screen name="(user)" options={{ headerShown: false }} />
-          <Stack.Screen name="(admin)" options={{ headerShown: false }} />
-          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-          <Stack.Screen name="cart" options={{ presentation: "modal" }} />
-        </Stack>
-      </CartProvider>
+      <AuthProvider>
+        <CartProvider>
+          <Stack>
+            <Stack.Screen name="(user)" options={{ headerShown: false }} />
+            <Stack.Screen name="(admin)" options={{ headerShown: false }} />
+            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+            <Stack.Screen name="cart" options={{ presentation: "modal" }} />
+          </Stack>
+        </CartProvider>
+      </AuthProvider>
     </ThemeProvider>
   );
 }
