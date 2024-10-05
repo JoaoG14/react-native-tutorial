@@ -53,11 +53,6 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
-  const { session } = useAuth();
-
-  if (!session) {
-    return <Redirect href={"/"} />;
-  }
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
