@@ -1,16 +1,23 @@
-import orders from "@/assets/data/orders";
+import { useOrderDetails } from "@/src/api/orders";
+import { useUpdateOrderSubscription } from "@/src/api/orders/subscriptions";
 import OrderItemListItem from "@/src/components/OrderItemListItem";
 import OrderListItem from "@/src/components/OrderListItem";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { Text, View, FlatList } from "react-native";
+import { Text, View, FlatList, ActivityIndicator } from "react-native";
 
 export default function OrderDetailsScren() {
-  const { id } = useLocalSearchParams();
+  const { id: idString } = useLocalSearchParams();
+  const id = parseFloat(typeof idString === "string" ? idString : idString[0]);
 
-  const order = orders.find((o) => o.id.toString() === id);
+  const { data: order, error, isLoading } = useOrderDetails(id);
+  useUpdateOrderSubscription(id);
 
-  if (!order) {
-    return <Text>Not found</Text>;
+  if (isLoading) {
+    return <ActivityIndicator />;
+  }
+
+  if (error) {
+    return <Text>Failed to fetch products</Text>;
   }
 
   return (
